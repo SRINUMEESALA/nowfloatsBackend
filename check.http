@@ -1,0 +1,30 @@
+GET http://localhost:4000/getFeed?user=srinusri76585@gmail.com
+
+###
+GET http://localhost:4000/getFeed?onlyCurrentUserPosts=true&user=srinum@gmail.com
+###
+GET http://localhost:4000/posts/B5O4LrJZoU32LtCe6D5c
+
+
+###
+POST http://localhost:4000/post
+Content-Type: application/json
+
+{
+    "comments":"commentOne",
+    "author":"krishna@gmail.com",
+    "sourceUrl":"https://img.freepik.com/free-vector/happy-janmashtami-with-lord-krishna-hand-playing-bansuri-card-background_1035-24230.jpg?size=338&ext=jpg&uid=R96247835&ga=GA1.1.2024764164.1678773257&semt=sph",
+    "date":"1970-01-20T10:31:23.632Z",
+    "content":"newly added content"
+}
+
+###
+DELETE http://localhost:4000/post/delete?postId=Vp5Xa4vTkHciqVhGVvXg
+
+###
+PUT http://localhost:4000/post/update?postId=zpNHXk7ZYf0UMain8l4L
+Content-Type: application/json
+
+{
+    "comments":"commentTwo"
+}
