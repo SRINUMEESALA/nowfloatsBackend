@@ -43,6 +43,7 @@ const retrievePosts = async (request, response) => {
             ...doc.data(),
             id: doc.id,
           }));
+          availablePosts = availablePosts.filter((obj) => obj.author !== user);
           response.status(200);
           response.send(availablePosts);
         });
