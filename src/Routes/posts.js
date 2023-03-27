@@ -27,7 +27,7 @@ const retrievePosts = async (request, response) => {
             id: doc.id,
           }));
           availableUserPosts = availableUserPosts.filter(
-            (doc) => doc.author === user
+            (obj) => obj.author === user
           );
           response.status(200);
           response.send(availableUserPosts);
