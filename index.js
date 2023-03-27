@@ -9,5 +9,5 @@ app.use(express.json());
 app.use(postsRoute);
 
 app.listen(port, () => {
-  console.log(`Server is running successfully!`);
+  console.log(`Server is running successfully at ${port}`);
 });

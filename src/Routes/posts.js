@@ -1,5 +1,5 @@
 import express from "express";
-import { postsCollectionRef, db } from "./dbConnections/firebaseDBCon.js";
+import { postsCollectionRef, db } from "../dbConnections/firebaseDBCon.js";
 const postsRoute = new express.Router();
 import {
   addDoc,
@@ -8,6 +8,8 @@ import {
   getDoc,
   where,
   onSnapshot,
+  orderBy,
+  serverTimestamp,
 } from "@firebase/firestore";
 
 const retrievePosts = async (request, response) => {
@@ -33,8 +35,11 @@ const retrievePosts = async (request, response) => {
         break;
 
       case user !== undefined:
+        // orderBy("author", "asc"),
+        // where("author", "!=", user),
         let availablePosts = [];
-        const q = query(postsCollectionRef, where("author", "!=", user));
+        let q = query(postsCollectionRef, orderBy("date", "desc"));
+
         onSnapshot(q, (snapshot) => {
           availablePosts = snapshot.docs.map((doc) => ({
             ...doc.data(),
@@ -77,7 +82,8 @@ const getPostDetails = async (request, response) => {
 const publishPost = async (request, response) => {
   console.log("Publish Post API accessed");
   try {
-    const post = request.body;
+    const post = { ...request.body, date: serverTimestamp() };
+    console.log(serverTimestamp());
     console.log(post);
     const result = await addDoc(postsCollectionRef, post);
     console.log(result);
@@ -90,7 +96,32 @@ const publishPost = async (request, response) => {
   }
 };
 
+// const updatePosts = async (request, response) => {
+//   try {
+//     const userposts = query(postsCollectionRef, where("author", "==", user));
+//     onSnapshot(userposts, (snapshot) => {
+//       snapshot.docs.map((obj) => {
+//         const docRef = doc(db, "posts", obj.id);
+//         updateDoc(docRef, { data: serverTimestamp() }).then(() => {
+//           console.log("updated");
+//         });
+//         return {
+//           ...obj.data(),
+//           id: obj.id,
+//         };
+//       });
+//       response.status(200);
+//       response.send("Done");
+//     });
+//   } catch (error) {
+//     response.status(500);
+//     response.send({ msg: "Something went wrong." });
+//     console.log(error);
+//   }
+// };
+
 // Routes
+
 postsRoute.get("/getFeed", retrievePosts);
 postsRoute.get("/posts/:id", getPostDetails);
 postsRoute.post("/post", publishPost);
