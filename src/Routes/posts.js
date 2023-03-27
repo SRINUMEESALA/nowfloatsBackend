@@ -20,23 +20,21 @@ const retrievePosts = async (request, response) => {
     // Retriving based on condition
     switch (true) {
       case onlyCurrentUserPosts !== undefined && user !== undefined:
-        const userposts = query(
-          postsCollectionRef,
-          where("author", "==", user)
-        );
+        const userposts = query(postsCollectionRef, orderBy("date", "desc"));
         onSnapshot(userposts, (snapshot) => {
           let availableUserPosts = snapshot.docs.map((doc) => ({
             ...doc.data(),
             id: doc.id,
           }));
+          availableUserPosts = availableUserPosts.filter(
+            (doc) => doc.author === user
+          );
           response.status(200);
           response.send(availableUserPosts);
         });
         break;
 
       case user !== undefined:
-        // orderBy("author", "asc"),
-        // where("author", "!=", user),
         let availablePosts = [];
         let q = query(postsCollectionRef, orderBy("date", "desc"));
 
@@ -95,32 +93,6 @@ const publishPost = async (request, response) => {
     console.log(error);
   }
 };
-
-// const updatePosts = async (request, response) => {
-//   try {
-//     const userposts = query(postsCollectionRef, where("author", "==", user));
-//     onSnapshot(userposts, (snapshot) => {
-//       snapshot.docs.map((obj) => {
-//         const docRef = doc(db, "posts", obj.id);
-//         updateDoc(docRef, { data: serverTimestamp() }).then(() => {
-//           console.log("updated");
-//         });
-//         return {
-//           ...obj.data(),
-//           id: obj.id,
-//         };
-//       });
-//       response.status(200);
-//       response.send("Done");
-//     });
-//   } catch (error) {
-//     response.status(500);
-//     response.send({ msg: "Something went wrong." });
-//     console.log(error);
-//   }
-// };
-
-// Routes
 
 postsRoute.get("/getFeed", retrievePosts);
 postsRoute.get("/posts/:id", getPostDetails);
